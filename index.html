@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="apple-touch-icon" href="/ketta-machine/icon.svg" />
+    <link rel="manifest" href="/ketta-machine/manifest.json" />
+    <title>ケッタ走</title>
+    <style>
+      /* CSS読み込み完了までの間、未スタイルの文字列が左上に表示される（FOUC）のを防ぐ */
+      #game-container { visibility: hidden; }
+    </style>
+    <script type="module" crossorigin src="/ketta-machine/assets/index-BF1BqAxn.js"></script>
+    <link rel="stylesheet" crossorigin href="/ketta-machine/assets/index-BJoVuFWz.css">
+  </head>
+  <body>
+    <div id="game-container">
+      <canvas id="game-canvas"></canvas>
+      <div id="ui-layer">
+        <div id="score-display">0m</div>
+        
+        <!-- タイトル画面 -->
+        <div id="title-screen" class="screen active">
+          <h1>ケッタ走</h1>
+          <p class="blink">画面タップ または スペースキーでスタート</p>
+          
+          <div class="ranking-link-container">
+            <a href="#" id="btn-show-ranking">👑 ベストスコアを見る</a>
+          </div>
+          
+          <!-- PWAインストール案内 -->
+          <div id="install-prompt-container" class="install-prompt">
+            <p class="install-title">＼ スマホのアプリとして遊ぼう！ ／</p>
+            <button id="install-button" class="btn-primary">アプリをインストール</button>
+            <p id="ios-install-hint" class="install-hint" style="display: none;">
+              ※iPhoneの方は、Safariの「共有」ボタンから<br>「ホーム画面に追加」を選んでください。
+            </p>
+          </div>
+        </div>
+
+        <!-- ランキング画面 -->
+        <div id="ranking-screen" class="screen modal-screen">
+          <div class="modal-content">
+            <h2>👑 トップ3</h2>
+            <ol class="ranking-list">
+              <li><span id="rank-1">0</span>m</li>
+              <li><span id="rank-2">0</span>m</li>
+              <li><span id="rank-3">0</span>m</li>
+            </ol>
+            <button id="btn-close-ranking" class="btn-primary">閉じる</button>
+          </div>
+        </div>
+
+        <!-- ゲームオーバー画面 -->
+        <div id="game-over-screen" class="screen">
+          <h2>ゲームオーバー</h2>
+          <p>記録: <span id="final-score">0</span>m</p>
+          <p class="blink" style="margin-top:20px;">画面タップ または スペースキーでリトライ</p>
+          <button id="btn-back-to-title" class="btn-primary" style="margin-top: 30px;">タイトルへ戻る</button>
+        </div>
+      </div>
+    </div>
+    
+  </body>
+</html>
