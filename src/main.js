@@ -51,9 +51,23 @@ window.addEventListener('DOMContentLoaded', () => {
     return ('standalone' in window.navigator && window.navigator.standalone) || window.matchMedia('(display-mode: standalone)').matches;
   };
 
+  // アプリ内ブラウザ（LINE, Twitter, FB, IGなど）判定
+  const ua = window.navigator.userAgent;
+  const isLine = /Line/i.test(ua);
+  const isInAppBrowser = /Instagram|FBAV|FBAN|Twitter|Line/i.test(ua);
+
   if (installContainer && !isStandalone()) {
     installContainer.style.display = 'block';
-    if (isIos()) {
+    
+    if (isInAppBrowser) {
+      // LINE等のアプリ内ブラウザの場合
+      if (installButton) {
+        installButton.style.display = 'inline-block';
+        installButton.innerText = '標準ブラウザで開く';
+      }
+      if (iosHint) iosHint.style.display = 'none'; // Safariの共有ボタンは出ないので隠す
+    } else if (isIos()) {
+      // 普通のSafariの場合
       if (installButton) installButton.style.display = 'none';
       if (iosHint) iosHint.style.display = 'block';
     }
@@ -61,16 +75,35 @@ window.addEventListener('DOMContentLoaded', () => {
 
   let deferredPrompt = null;
   window.addEventListener('beforeinstallprompt', (e) => {
+    if (isInAppBrowser) return; // アプリ内ブラウザでは何もしない
     e.preventDefault();
     deferredPrompt = e;
     if (installContainer) installContainer.style.display = 'block';
-    if (installButton) installButton.style.display = 'inline-block';
+    if (installButton) {
+      installButton.style.display = 'inline-block';
+      installButton.innerText = 'アプリをインストール';
+    }
     if (iosHint) iosHint.style.display = 'none';
   });
 
   if (installButton) {
     installButton.addEventListener('click', async (e) => {
       e.stopPropagation(); // ゲーム暴発防止
+      
+      if (isInAppBrowser) {
+        // アプリ内ブラウザ特有の処理
+        if (isLine) {
+          // LINEの場合は専用パラメータを付けると自動で外部ブラウザが開く
+          const url = new URL(location.href);
+          url.searchParams.set('openExternalBrowser', '1');
+          location.href = url.toString();
+        } else {
+          // その他（Twitter等）は手動案内
+          alert('画面右上などのメニュー(︙)から「ブラウザで開く（Safari/Chrome等）」を選択してください！');
+        }
+        return;
+      }
+
       if (deferredPrompt) {
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
