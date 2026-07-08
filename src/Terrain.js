@@ -2,7 +2,8 @@ export class Terrain {
   constructor(canvasWidth, canvasHeight) {
     this.canvasWidth = canvasWidth;
     this.canvasHeight = canvasHeight;
-    this.baseY = canvasHeight * 0.7; 
+    const isPortrait = canvasHeight > canvasWidth;
+    this.baseY = canvasHeight * (isPortrait ? 0.5 : 0.7); 
     
     this.points = []; 
     this.speed = 8;
@@ -148,12 +149,12 @@ export class Terrain {
     ctx.stroke();
   }
 
-  resize(newWidth, newHeight, heightRatio) {
+  resize(newWidth, newHeight, heightRatio, shiftY, targetBaseY) {
     this.canvasWidth = newWidth;
     this.canvasHeight = newHeight;
-    this.baseY *= heightRatio;
+    this.baseY = targetBaseY;
     for (let i = 0; i < this.points.length; i++) {
-      this.points[i].y *= heightRatio;
+      this.points[i].y = (this.points[i].y * heightRatio) + shiftY;
     }
   }
 }

@@ -54,6 +54,7 @@ export class Game {
     const container = document.getElementById('game-container');
     if (!container) return;
     
+    const oldWidth = this.canvas.width;
     const oldHeight = this.canvas.height;
     const newWidth = container.clientWidth;
     const newHeight = container.clientHeight;
@@ -61,13 +62,26 @@ export class Game {
     this.canvas.width = newWidth;
     this.canvas.height = newHeight;
     
-    // 画面回転時など、高さが変わった場合は全オブジェクトのY座標を比率に合わせてスケーリングする
-    if (oldHeight > 0 && newHeight > 0 && oldHeight !== newHeight) {
+    // 画面回転時など、高さや幅が変わった場合は全オブジェクトのY座標をスケーリング＆シフトする
+    if (oldHeight > 0 && newHeight > 0 && (oldHeight !== newHeight || oldWidth !== newWidth)) {
       const heightRatio = newHeight / oldHeight;
-      if (this.terrain) this.terrain.resize(newWidth, newHeight, heightRatio);
-      if (this.background) this.background.resize(newWidth, newHeight, heightRatio);
-      if (this.obstacles) this.obstacles.resize(newWidth, newHeight, heightRatio);
-      if (this.player) this.player.resize(heightRatio);
+      
+      const oldIsPortrait = oldHeight > oldWidth;
+      const newIsPortrait = newHeight > newWidth;
+      
+      const oldBaseRatio = oldIsPortrait ? 0.5 : 0.7;
+      const newBaseRatio = newIsPortrait ? 0.5 : 0.7;
+      
+      const oldBaseY = oldHeight * oldBaseRatio;
+      const scaledBaseY = oldBaseY * heightRatio;
+      const targetBaseY = newHeight * newBaseRatio;
+      
+      const shiftY = targetBaseY - scaledBaseY;
+      
+      if (this.terrain) this.terrain.resize(newWidth, newHeight, heightRatio, shiftY, targetBaseY);
+      if (this.background) this.background.resize(newWidth, newHeight, heightRatio, shiftY);
+      if (this.obstacles) this.obstacles.resize(newWidth, newHeight, heightRatio, shiftY);
+      if (this.player) this.player.resize(heightRatio, shiftY);
     }
   }
 

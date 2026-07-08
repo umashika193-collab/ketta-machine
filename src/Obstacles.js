@@ -93,11 +93,11 @@ export class Obstacles {
     }
   }
 
-  resize(newWidth, newHeight, heightRatio) {
+  resize(newWidth, newHeight, heightRatio, shiftY) {
     this.canvasWidth = newWidth;
     this.canvasHeight = newHeight;
     for (let obs of this.obstacles) {
-      obs.y *= heightRatio;
+      obs.y = (obs.y * heightRatio) + shiftY;
     }
   }
 }

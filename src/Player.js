@@ -148,7 +148,7 @@ export class Player {
     ctx.restore();
   }
 
-  resize(heightRatio) {
-    this.y *= heightRatio;
+  resize(heightRatio, shiftY) {
+    this.y = (this.y * heightRatio) + shiftY;
   }
 }
