@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>キャラクター候補プレビュー</title>
+  <style>
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      background-color: #f0f0f0;
+      text-align: center;
+      padding: 20px;
+    }
+    .candidate-container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+    .candidate {
+      background: #fff;
+      border: 2px solid #000;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 10px;
+      width: 250px;
+      box-shadow: 5px 5px 0px #ccc;
+    }
+    canvas {
+      border: 1px dashed #aaa;
+      background-image: linear-gradient(#e5e5e5 1px, transparent 1px), linear-gradient(90deg, #e5e5e5 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    h2 { font-size: 20px; margin-bottom: 10px; }
+    p { font-size: 14px; color: #555; text-align: left; }
+  </style>
+</head>
+<body>
+  <h1>キャラクターデザイン候補</h1>
+  <p>現在のキャラクターが少し変とのことでしたので、ノート風デザインに合う3つの候補を作成しました。</p>
+  
+  <div class="candidate-container">
+    <!-- 候補A -->
+    <div class="candidate">
+      <h2>候補A: クラシック・チャリ走</h2>
+      <canvas id="canvasA" width="150" height="150"></canvas>
+      <p>元祖「チャリ走」リスペクト。最もシンプルで無駄のない線。棒人間が前傾姿勢で立ち漕ぎしているようなクラシックなスタイル。</p>
+    </div>
+
+    <!-- 候補B -->
+    <div class="candidate">
+      <h2>候補B: スピード重視・シルエット</h2>
+      <canvas id="canvasB" width="150" height="150"></canvas>
+      <p>線を太くし、自転車のフレームをスポーティな形に。疾走感を強調したデザインで、アクションゲームとしての見栄えが良いです。</p>
+    </div>
+
+    <!-- 候補C -->
+    <div class="candidate">
+      <h2>候補C: ゆるふわ・落書き風</h2>
+      <canvas id="canvasC" width="150" height="150"></canvas>
+      <p>「ノートの落書き」というコンセプトを強めたデザイン。少し歪んだ車輪と、のんびり座って漕いでいるコミカルなスタイル。</p>
+    </div>
+  </div>
+
+  <script>
+    // 共通の描画セットアップ
+    function setupCanvas(id) {
+      const canvas = document.getElementById(id);
+      const ctx = canvas.getContext('2d');
+      ctx.translate(canvas.width / 2 - 20, canvas.height / 2);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      return ctx;
+    }
+
+    // --- 候補A: クラシック・チャリ走 ---
+    const ctxA = setupCanvas('canvasA');
+    ctxA.strokeStyle = '#000';
+    ctxA.lineWidth = 3;
+    
+    // 車輪
+    ctxA.beginPath(); ctxA.arc(0, 30, 12, 0, Math.PI * 2); ctxA.stroke();
+    ctxA.beginPath(); ctxA.arc(40, 30, 12, 0, Math.PI * 2); ctxA.stroke();
+    // フレーム
+    ctxA.beginPath();
+    ctxA.moveTo(0, 30); ctxA.lineTo(15, 10); ctxA.lineTo(40, 30);
+    ctxA.moveTo(0, 30); ctxA.lineTo(30, 10); ctxA.lineTo(15, 10);
+    ctxA.stroke();
+    // ハンドルとサドル
+    ctxA.beginPath(); ctxA.moveTo(30, 10); ctxA.lineTo(30, 0); ctxA.lineTo(35, -5); ctxA.stroke();
+    // 棒人間（立ち漕ぎ）
+    ctxA.beginPath();
+    ctxA.moveTo(10, -5); // 腰
+    ctxA.lineTo(30, -5); // 腕（ハンドルへ）
+    ctxA.moveTo(10, -5);
+    ctxA.lineTo(20, -25); // 胴体
+    ctxA.stroke();
+    // 頭
+    ctxA.beginPath(); ctxA.arc(25, -30, 6, 0, Math.PI * 2); ctxA.stroke();
+    // 足
+    ctxA.beginPath(); ctxA.moveTo(10, -5); ctxA.lineTo(20, 15); ctxA.lineTo(20, 30); ctxA.stroke(); // ペダルへ
+
+
+    // --- 候補B: スピード重視・シルエット ---
+    const ctxB = setupCanvas('canvasB');
+    ctxB.strokeStyle = '#000';
+    ctxB.lineWidth = 4; // 太め
+    
+    // 車輪
+    ctxB.beginPath(); ctxB.arc(0, 30, 14, 0, Math.PI * 2); ctxB.stroke();
+    ctxB.beginPath(); ctxB.arc(45, 30, 14, 0, Math.PI * 2); ctxB.stroke();
+    // スポーティなフレーム (1本線)
+    ctxB.beginPath(); ctxB.moveTo(0, 30); ctxB.lineTo(20, 15); ctxB.lineTo(45, 30); ctxB.stroke();
+    ctxB.beginPath(); ctxB.moveTo(20, 15); ctxB.lineTo(35, 5); ctxB.stroke(); // ハンドル周り
+    // 前傾姿勢のライダー
+    ctxB.beginPath(); ctxB.moveTo(15, 5); ctxB.lineTo(35, 5); ctxB.stroke(); // 腕
+    ctxB.beginPath(); ctxB.moveTo(15, 5); ctxB.lineTo(5, -15); ctxB.stroke(); // 胴体
+    // 頭（大きめ・ヘルメット風）
+    ctxB.beginPath(); ctxB.arc(12, -20, 8, 0, Math.PI * 2); ctxB.fill();
+    // 足
+    ctxB.beginPath(); ctxB.moveTo(15, 5); ctxB.lineTo(25, 25); ctxB.stroke();
+
+
+    // --- 候補C: ゆるふわ・落書き風 ---
+    const ctxC = setupCanvas('canvasC');
+    ctxC.strokeStyle = '#333';
+    ctxC.lineWidth = 2; // 細め・ゆるめ
+    
+    // 少し歪んだ車輪（楕円や手書き感を出す）
+    ctxC.beginPath(); ctxC.ellipse(0, 30, 13, 11, 0.2, 0, Math.PI * 2); ctxC.stroke();
+    ctxC.beginPath(); ctxC.ellipse(38, 30, 11, 13, -0.2, 0, Math.PI * 2); ctxC.stroke();
+    // ゆるいフレーム
+    ctxC.beginPath();
+    ctxC.moveTo(0, 30); ctxC.quadraticCurveTo(15, 20, 15, 10);
+    ctxC.quadraticCurveTo(25, 15, 38, 30);
+    ctxC.moveTo(15, 10); ctxC.lineTo(30, 10);
+    ctxC.stroke();
+    // ゆったり座る人
+    ctxC.beginPath(); ctxC.moveTo(15, 10); ctxC.lineTo(15, -10); ctxC.stroke(); // 胴体
+    ctxC.beginPath(); ctxC.moveTo(15, -5); ctxC.lineTo(30, 5); ctxC.stroke(); // 腕
+    ctxC.beginPath(); ctxC.moveTo(15, 10); ctxC.lineTo(20, 25); ctxC.stroke(); // 足
+    // 頭（のほほんとした丸）
+    ctxC.beginPath(); ctxC.arc(15, -18, 8, 0, Math.PI * 2); ctxC.stroke();
+    // 目
+    ctxC.fillStyle = '#333';
+    ctxC.beginPath(); ctxC.arc(18, -19, 1.5, 0, Math.PI * 2); ctxC.fill();
+
+  </script>
+</body>
+</html>
