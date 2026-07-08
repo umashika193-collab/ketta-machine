@@ -5,14 +5,28 @@ window.addEventListener('DOMContentLoaded', () => {
   const canvas = document.getElementById('game-canvas');
   const game = new Game(canvas);
 
-  // --- メインループ ---
+  // --- メインループ（60FPS固定化処理） ---
   let lastTime = 0;
+  let accumulator = 0;
+  const timeStep = 1000 / 60; // 理想的な1フレームの時間（約16.66ms）
+
   function gameLoop(time) {
-    // 経過時間は将来的な拡張用
+    if (lastTime === 0) lastTime = time;
     const deltaTime = time - lastTime;
     lastTime = time;
 
-    game.update();
+    accumulator += deltaTime;
+
+    // タブがバックグラウンドに回った際の遅延蓄積（フリーズ）を防ぐ
+    if (accumulator > 100) accumulator = 100;
+
+    // 120Hzスマホ等でも「1秒間に60回」だけupdateを実行する
+    while (accumulator >= timeStep) {
+      game.update();
+      accumulator -= timeStep;
+    }
+
+    // 描画はモニターのリフレッシュレートに合わせて滑らかに行う
     game.draw();
 
     requestAnimationFrame(gameLoop);
