@@ -92,4 +92,12 @@ export class Obstacles {
       ctx.fillStyle = '#666';
     }
   }
+
+  resize(newWidth, newHeight, heightRatio) {
+    this.canvasWidth = newWidth;
+    this.canvasHeight = newHeight;
+    for (let obs of this.obstacles) {
+      obs.y *= heightRatio;
+    }
+  }
 }

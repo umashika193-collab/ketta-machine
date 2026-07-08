@@ -53,8 +53,22 @@ export class Game {
   resize() {
     const container = document.getElementById('game-container');
     if (!container) return;
-    this.canvas.width = container.clientWidth;
-    this.canvas.height = container.clientHeight;
+    
+    const oldHeight = this.canvas.height;
+    const newWidth = container.clientWidth;
+    const newHeight = container.clientHeight;
+    
+    this.canvas.width = newWidth;
+    this.canvas.height = newHeight;
+    
+    // 画面回転時など、高さが変わった場合は全オブジェクトのY座標を比率に合わせてスケーリングする
+    if (oldHeight > 0 && newHeight > 0 && oldHeight !== newHeight) {
+      const heightRatio = newHeight / oldHeight;
+      if (this.terrain) this.terrain.resize(newWidth, newHeight, heightRatio);
+      if (this.background) this.background.resize(newWidth, newHeight, heightRatio);
+      if (this.obstacles) this.obstacles.resize(newWidth, newHeight, heightRatio);
+      if (this.player) this.player.resize(heightRatio);
+    }
   }
 
   // --- ランキング（セキュア）ロジック ---

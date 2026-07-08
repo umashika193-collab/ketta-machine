@@ -147,4 +147,13 @@ export class Terrain {
     }
     ctx.stroke();
   }
+
+  resize(newWidth, newHeight, heightRatio) {
+    this.canvasWidth = newWidth;
+    this.canvasHeight = newHeight;
+    this.baseY *= heightRatio;
+    for (let i = 0; i < this.points.length; i++) {
+      this.points[i].y *= heightRatio;
+    }
+  }
 }

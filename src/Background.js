@@ -74,4 +74,12 @@ export class Background {
     
     ctx.restore();
   }
+
+  resize(newWidth, newHeight, heightRatio) {
+    this.canvasWidth = newWidth;
+    this.canvasHeight = newHeight;
+    for (let line of this.speedLines) {
+      line.y *= heightRatio;
+    }
+  }
 }
