@@ -48,7 +48,9 @@ window.addEventListener('DOMContentLoaded', () => {
   
   // スタンドアロン判定
   const isStandalone = () => {
-    return ('standalone' in window.navigator && window.navigator.standalone) || window.matchMedia('(display-mode: standalone)').matches;
+    return ('standalone' in window.navigator && window.navigator.standalone) || 
+           window.matchMedia('(display-mode: standalone)').matches ||
+           window.matchMedia('(display-mode: fullscreen)').matches;
   };
 
   // アプリ内ブラウザ（LINE, Twitter, FB, IGなど）判定
