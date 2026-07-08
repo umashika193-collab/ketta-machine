@@ -33,7 +33,12 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   requestAnimationFrame(gameLoop);
 
-  // --- PWAインストール機能（安全な実装） ---
+  // --- PWAインストール・オフライン対応機能 ---
+  if ('serviceWorker' in navigator) {
+    // Viteのbase URLを考慮し、現在のパスからの相対位置で登録
+    navigator.serviceWorker.register('./sw.js').catch(console.error);
+  }
+
   const installContainer = document.getElementById('install-prompt-container');
   const installButton = document.getElementById('install-button');
   const iosHint = document.getElementById('ios-install-hint');
