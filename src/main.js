@@ -75,7 +75,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   let deferredPrompt = null;
   window.addEventListener('beforeinstallprompt', (e) => {
-    if (isInAppBrowser) return; // アプリ内ブラウザでは何もしない
+    if (isInAppBrowser || isStandalone()) return; // アプリ内ブラウザ・インストール済みの場合は何もしない
     e.preventDefault();
     deferredPrompt = e;
     if (installContainer) installContainer.style.display = 'block';
@@ -84,6 +84,10 @@ window.addEventListener('DOMContentLoaded', () => {
       installButton.innerText = 'アプリをインストール';
     }
     if (iosHint) iosHint.style.display = 'none';
+  });
+
+  window.addEventListener('appinstalled', () => {
+    if (installContainer) installContainer.style.display = 'none';
   });
 
   if (installButton) {

@@ -213,3 +213,13 @@ p {
   border-bottom: 1px dashed #ccc;
   padding-bottom: 5px;
 }
+
+/* バージョン表記 */
+.version-text {
+  position: absolute;
+  bottom: 10px;
+  right: 15px;
+  font-size: 14px;
+  color: #666;
+  font-family: monospace;
+}
