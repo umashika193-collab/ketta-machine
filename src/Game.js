@@ -2,6 +2,7 @@ import { Player } from './Player.js';
 import { Terrain } from './Terrain.js';
 import { Background } from './Background.js';
 import { Obstacles } from './Obstacles.js';
+import { SoundManager } from './SoundManager.js';
 
 export class Game {
   constructor(canvas) {
@@ -22,6 +23,7 @@ export class Game {
     this.terrain = null;
     this.background = null;
     this.obstacles = null;
+    this.sound = new SoundManager();
 
     // UI要素の取得
     this.uiScore = document.getElementById('score-display');
@@ -143,6 +145,9 @@ export class Game {
   // --- 入力制御 ---
   bindInputs() {
     const jumpAction = (e) => {
+      // ユーザーインタラクション時にAudioContextを初期化
+      this.sound.init();
+
       // ランキング表示中は無視
       if (this.uiRankingScreen && this.uiRankingScreen.classList.contains('active')) return;
       if (e.type !== 'mousedown') e.preventDefault();
@@ -150,6 +155,9 @@ export class Game {
       if (this.state === 'TITLE' || this.state === 'GAMEOVER') {
         this.start();
       } else if (this.state === 'PLAYING' && this.player) {
+        if (!this.player.isDead) {
+          this.sound.playJump();
+        }
         this.player.jump();
       }
     };
@@ -204,22 +212,29 @@ export class Game {
     if (this.uiTitle) this.uiTitle.classList.remove('active');
     if (this.uiGameOver) this.uiGameOver.classList.remove('active');
     this.updateUI();
+    
+    this.sound.playBGM();
   }
 
   gameOver() {
     if (this.state === 'GAMEOVER') return;
     this.state = 'GAMEOVER';
+    this.player.isDead = true;
     
-    const finalScore = Math.floor(this.score);
-    if (this.uiFinalScore) this.uiFinalScore.innerText = finalScore;
-    if (this.uiGameOver) this.uiGameOver.classList.add('active');
-
-    // ランキング更新
-    this.topScores.push(finalScore);
+    this.sound.stopBGM();
+    this.sound.playDeath();
+    
+    // スコア処理
+    const scoreInt = Math.floor(this.score);
+    this.topScores.push(scoreInt);
     this.topScores.sort((a, b) => b - a);
     this.topScores = this.topScores.slice(0, 3);
     this.saveRanking();
     this.updateRankingUI();
+    
+    // 画面更新
+    if (this.uiFinalScore) this.uiFinalScore.innerText = scoreInt;
+    if (this.uiGameOver) this.uiGameOver.classList.add('active');
   }
 
   update() {
